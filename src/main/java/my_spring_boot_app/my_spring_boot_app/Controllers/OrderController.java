@@ -64,7 +64,7 @@ public class OrderController {
         BigDecimal totalAmount = BigDecimal.ZERO;
         for (ItemCart item : cartItems) {
             BigDecimal itemTotal = item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-            totalAmount = totalAmount.add(itemTotal);1
+            totalAmount = totalAmount.add(itemTotal);
         }
 
         String customerFullName = firstName + " " + lastName;
