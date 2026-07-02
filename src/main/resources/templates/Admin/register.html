@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Реєстрація', ~{::main})}">
+<body>
+
+<main class="container my-5" style="max-width: 600px;">
+    <div class="bg-white p-4 p-lg-5 rounded-5 shadow-sm border">
+        <h2 class="fw-bold text-dark mb-4 text-center">Створення акаунту</h2>
+
+        <div th:if="${param.error}" class="alert alert-danger rounded-4 text-center" role="alert">
+            Користувач з таким логіном або поштою вже існує!
+        </div>
+
+        <form th:action="@{/register}" th:object="${user}" method="post" class="d-flex flex-column gap-3">
+
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <label class="form-label fw-semibold">Ім'я</label>
+                    <input type="text" th:field="*{firstName}" class="form-control rounded-pill px-3" required />
+                </div>
+                <div class="col-sm-6">
+                    <label class="form-label fw-semibold">Прізвище</label>
+                    <input type="text" th:field="*{lastName}" class="form-control rounded-pill px-3" required />
+                </div>
+            </div>
+
+            <div>
+                <label class="form-label fw-semibold">Електронна пошта</label>
+                <input type="email" th:field="*{email}" class="form-control rounded-pill px-3" required />
+            </div>
+
+            <div>
+                <label class="form-label fw-semibold">Номер телефону</label>
+                <input type="tel" th:field="*{phone}" class="form-control rounded-pill px-3" placeholder="+380..." required />
+            </div>
+
+            <hr class="my-2">
+
+            <div>
+                <label class="form-label fw-semibold">Логін (Username)</label>
+                <input type="text" th:field="*{username}" class="form-control rounded-pill px-3" required />
+            </div>
+
+            <div>
+                <label class="form-label fw-semibold">Пароль</label>
+                <input type="password" th:field="*{password}" class="form-control rounded-pill px-3" required />
+            </div>
+
+            <button type="submit" class="btn btn-dark btn-lg w-100 rounded-pill fw-bold mt-3">Зареєструватися</button>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="mb-0 text-muted">Вже є акаунт? <a th:href="@{/login}" class="text-dark fw-bold text-decoration-none">Увійти</a></p>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

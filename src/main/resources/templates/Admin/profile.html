@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: layout('Особистий кабінет', ~{::main})}">
+
+<body>
+<main class="container-fluid my-5 px-4 px-xl-5" style="max-width: 1600px;">
+
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1 class="display-5 fw-bolder text-dark mb-0">Особистий кабінет</h1>
+
+        <span class="badge fs-5 py-3 px-4 rounded-pill shadow-sm bg-dark">
+            <span sec:authorize="hasRole('ADMIN')">Адміністратор 👑</span>
+            <span sec:authorize="hasRole('MODERATOR') and !hasRole('ADMIN')">Модератор 🛡️</span>
+            <span sec:authorize="hasRole('USER') and !hasRole('MODERATOR') and !hasRole('ADMIN')">Користувач 👤</span>
+        </span>
+    </div>
+
+    <div class="row g-5 align-items-start">
+
+        <div class="col-12 col-xl-3">
+            <div class="sticky-top" style="top: 30px;">
+                <div class="nav flex-column gap-2" id="v-pills-tab" role="tablist">
+
+                    <a class="nav-link active py-2 px-3 text-dark fw-bold text-decoration-none"
+                       style="cursor: pointer;" data-bs-toggle="pill" data-bs-target="#content-profile">👤 Мій
+                        профіль</a>
+
+                    <a class="nav-link py-2 px-3 text-dark fw-bold text-decoration-none"
+                       style="cursor: pointer;" data-bs-toggle="pill" data-bs-target="#content-orders">📦 Історія
+                        покупок</a>
+
+                    <!-- МЕНЮ МОДЕРАТОРА ТА АДМІНА -->
+                    <div sec:authorize="hasAnyRole('MODERATOR', 'ADMIN')">
+                        <hr class="my-3 text-secondary">
+                        <small class="text-muted fw-bolder px-2 text-uppercase"
+                               style="font-size: 0.75rem; letter-spacing: 1px;">Магазин</small>
+
+                        <a class="nav-link py-2 px-3 text-dark fw-bold text-decoration-none"
+                           style="cursor: pointer;" data-bs-toggle="pill" data-bs-target="#content-all-orders">📝 Всі
+                            замовлення</a>
+
+                        <a class="nav-link py-2 px-3 text-dark fw-bold text-decoration-none" th:href="@{/admin}">🛍️
+                            Каталог адміна</a>
+                    </div>
+
+                    <!-- МЕНЮ ТІЛЬКИ ДЛЯ АДМІНА -->
+                    <div sec:authorize="hasRole('ADMIN')">
+                        <hr class="my-3 text-secondary">
+                        <small class="text-muted fw-bolder px-2 text-uppercase"
+                               style="font-size: 0.75rem; letter-spacing: 1px;">Адміністрування</small>
+
+                        <a class="nav-link py-2 px-3 text-dark fw-bold text-decoration-none"
+                           style="cursor: pointer;" data-bs-toggle="pill" data-bs-target="#content-users">👥 Користувачі
+                            та Ролі</a>
+                    </div>
+
+                    <hr class="my-3 text-secondary">
+                    <form th:action="@{/logout}" method="post" class="m-0">
+                        <button type="submit"
+                                class="btn btn-link text-danger fw-bold text-decoration-none p-2 w-100 text-start border-0">
+                            Вийти &rarr;
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-9">
+            <div class="tab-content bg-white p-5 rounded-4 shadow border-0" id="v-pills-tabContent"
+                 style="min-height: 600px;">
+
+                <!-- 1. ПРОФІЛЬ -->
+                <div class="tab-pane fade show active" id="content-profile" role="tabpanel">
+                    <h3 class="fw-bolder text-dark mb-5">Налаштування профілю</h3>
+
+                    <div th:if="${param.success}" class="alert alert-success fs-5 rounded-4 py-3 px-4 mb-4"
+                         role="alert">
+                        ✅ Дані вашого профілю успішно оновлено!
+                    </div>
+
+                    <form th:action="@{/profile/update}" method="post" class="d-flex flex-column gap-4">
+                        <div class="row g-4">
+                            <div class="col-sm-6">
+                                <label class="form-label fw-bold text-muted fs-5 mb-2">Ім'я</label>
+                                <input type="text" name="firstName" th:value="${user.firstName}"
+                                       class="form-control form-control-lg rounded-4 p-3 fs-5" required/>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-bold text-muted fs-5 mb-2">Прізвище</label>
+                                <input type="text" name="lastName" th:value="${user.lastName}"
+                                       class="form-control form-control-lg rounded-4 p-3 fs-5" required/>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label fw-bold text-muted fs-5 mb-2">Адреса доставки (за
+                                замовчуванням)</label>
+                            <input type="text" name="address" th:value="${user.address}"
+                                   class="form-control form-control-lg rounded-4 p-3 fs-5"/>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-sm-6">
+                                <label class="form-label fw-bold text-muted fs-5 mb-2">Електронна пошта</label>
+                                <input type="email" name="email" th:value="${user.email}"
+                                       class="form-control form-control-lg rounded-4 p-3 fs-5" readonly/>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-bold text-muted fs-5 mb-2">Телефон</label>
+                                <input type="text" name="phone" th:value="${user.phone}"
+                                       class="form-control form-control-lg rounded-4 p-3 fs-5"/>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <button type="submit"
+                                    class="btn btn-dark btn-lg rounded-pill px-5 py-3 fw-bold fs-5 text-uppercase"
+                                    style="letter-spacing: 1px;">
+                                Зберегти зміни
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="tab-pane fade" id="content-orders" role="tabpanel">
+                    <h3 class="fw-bolder text-dark mb-5">Ваша історія покупок</h3>
+
+                    <div th:if="${#lists.isEmpty(userOrders)}" class="text-center py-5">
+                        <span style="font-size: 4rem;">🛍️</span>
+                        <h4 class="text-muted mt-4 mb-4">Ви ще нічого не замовляли.</h4>
+                        <a th:href="@{/catalog}" class="btn btn-dark btn-lg rounded-pill px-5 fw-bold">Перейти до
+                            каталогу</a>
+                    </div>
+
+                    <div th:unless="${#lists.isEmpty(userOrders)}" class="d-flex flex-column gap-4">
+                        <div th:each="order : ${userOrders}" class="card border rounded-4 shadow-sm">
+                            <div class="card-header bg-light border-bottom p-4 d-flex justify-content-between align-items-center rounded-top-4">
+                                <div>
+                                    <h5 class="fw-bold mb-1 text-dark">Замовлення №<span th:text="${order.id}"></span>
+                                    </h5>
+                                    <span class="text-muted fs-6"
+                                          th:text="${#temporals.format(order.createdAt, 'dd.MM.yyyy HH:mm')}">Дата</span>
+                                </div>
+
+                                <!-- ТУТ КРАСИВО ВИВОДЯТЬСЯ СТАТУСИ УКРАЇНСЬКОЮ -->
+                                <span class="badge fs-5 px-3 py-2 rounded-pill shadow-sm"
+                                      th:classappend="${order.status == 'NEW' ? 'bg-info text-dark' :
+                                                      (order.status == 'PROCESSING' ? 'bg-warning text-dark' :
+                                                      (order.status == 'SHIPPED' ? 'bg-primary' : 'bg-success'))}">
+                                    <span th:if="${order.status == 'NEW'}">Нове 📦</span>
+                                    <span th:if="${order.status == 'PROCESSING'}">В обробці ⏳</span>
+                                    <span th:if="${order.status == 'SHIPPED'}">Відправлено 🚚</span>
+                                    <span th:if="${order.status == 'DELIVERED'}">Доставлено ✅</span>
+                                </span>
+
+                            </div>
+                            <div class="card-body p-4">
+                                <ul class="list-group list-group-flush mb-3">
+                                    <li th:each="item : ${order.items}"
+                                        class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0 fs-5 border-0">
+                                        <span class="text-dark">
+                                            <span th:text="${item.product.name}" class="fw-semibold">Товар</span>
+                                            <span class="text-muted mx-2">x</span> <span class="fw-bold"
+                                                                                         th:text="${item.quantity}">1</span>
+                                        </span>
+                                        <span class="fw-bold text-dark" th:text="${item.price * item.quantity} + ' ₴'">Ціна</span>
+                                    </li>
+                                </ul>
+                                <hr class="my-3">
+                                <div class="text-end">
+                                    <span class="fs-5 text-muted me-2">Разом:</span>
+                                    <span class="fs-3 fw-bolder text-success"
+                                          th:text="${order.totalAmount} + ' ₴'">0 ₴</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div sec:authorize="hasAnyRole('MODERATOR', 'ADMIN')" class="tab-pane fade" id="content-all-orders"
+                     role="tabpanel">
+                    <h3 class="fw-bolder text-dark mb-4">Керування замовленнями клієнтів</h3>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover table-large align-middle border">
+                            <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Клієнт</th>
+                                <th scope="col">Дата</th>
+                                <th scope="col">Сума</th>
+                                <th scope="col">Статус</th>
+                                <th scope="col" class="text-end">Дія</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="order : ${allOrders}">
+                                <td class="fw-bold text-dark" th:text="'#' + ${order.id}">#1</td>
+                                <td>
+                                    <div class="fw-bold text-dark" th:text="${order.customerName}">Ім'я</div>
+                                    <div class="text-muted small" th:text="${order.customerPhone}">Телефон</div>
+                                </td>
+                                <td th:text="${#temporals.format(order.createdAt, 'dd.MM.yyyy HH:mm')}">Дата</td>
+                                <td class="fw-bold text-success" th:text="${order.totalAmount} + ' ₴'">Сума</td>
+                                <td>
+                                    <form th:action="@{/admin/orders/updateStatus}" method="post" class="m-0">
+                                        <input type="hidden" name="orderId" th:value="${order.id}">
+                                        <select name="status" class="form-select form-select-lg rounded-pill fw-bold"
+                                                onchange="updateStatus(this)">
+                                            <option value="NEW" th:selected="${order.status == 'NEW'}">Нове</option>
+                                            <option value="PROCESSING" th:selected="${order.status == 'PROCESSING'}">В
+                                                обробці
+                                            </option>
+                                            <option value="SHIPPED" th:selected="${order.status == 'SHIPPED'}">
+                                                Відправлено
+                                            </option>
+                                            <option value="DELIVERED" th:selected="${order.status == 'DELIVERED'}">
+                                                Доставлено
+                                            </option>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td class="text-end">
+                                    <a th:href="@{/admin/orders/delete(id=${order.id})}"
+                                       class="btn btn-outline-danger btn-lg rounded-pill"
+                                       onclick="return confirm('Видалити це замовлення?');">🗑️</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div th:if="${#lists.isEmpty(allOrders)}"
+                         class="alert alert-secondary text-center fs-5 py-4 rounded-4 mt-3">
+                        Наразі немає жодного замовлення в системі.
+                    </div>
+                </div>
+
+                <div sec:authorize="hasRole('ADMIN')" class="tab-pane fade" id="content-users" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bolder text-dark mb-0">Керування користувачами</h3>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover table-large align-middle border">
+                            <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Логін</th>
+                                <th scope="col">ПІБ та Контакти</th>
+                                <th scope="col">Роль</th>
+                                <th scope="col" class="text-end">Управління</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="usr : ${allUsers}">
+                                <td class="fw-bold text-dark" th:text="${usr.id}">1</td>
+                                <td class="fw-bold text-dark" th:text="${usr.username}">username</td>
+                                <td>
+                                    <div class="text-dark" th:text="${usr.firstName} + ' ' + ${usr.lastName}">Ім'я</div>
+                                    <div class="text-muted small" th:text="${usr.email}">email</div>
+                                    <div class="text-muted small" th:text="${usr.phone}">phone</div>
+                                </td>
+                                <td>
+                                        <span class="badge fs-6 rounded-pill"
+                                              th:classappend="${usr.role == 'ROLE_ADMIN' ? 'bg-danger' : (usr.role == 'ROLE_MODERATOR' ? 'bg-warning text-dark' : 'bg-secondary')}"
+                                              th:text="${usr.role}">РОЛЬ</span>
+                                </td>
+                                <td class="text-end">
+                                    <a th:href="@{/admin/users/edit/{id}(id=${usr.id})}"
+                                       class="btn btn-dark btn-lg rounded-pill px-4 fw-bold shadow-sm">Редагувати</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function updateStatus(selectElement) {
+            const form = selectElement.form;
+            const orderId = form.querySelector('input[name="orderId"]').value;
+            const newStatus = selectElement.value;
+
+            let bodyString = `orderId=${orderId}&status=${newStatus}`;
+
+            const csrfInput = form.querySelector('input[name="_csrf"]');
+            if (csrfInput) {
+                bodyString += `&_csrf=${csrfInput.value}`;
+            }
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: bodyString
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        alert('Помилка доступу або сервера! (Код: ' + response.status + ')');
+                        throw new Error('Помилка сервера');
+                    }
+                    selectElement.style.borderColor = 'mediumseagreen';
+                    selectElement.style.borderWidth = '2px';
+                    setTimeout(() => {
+                        selectElement.style.borderColor = '';
+                        selectElement.style.borderWidth = '';
+                    }, 1000);
+                })
+                .catch(error => console.error(error));
+        }
+    </script>
+</main>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head}"></head>
+
+<body class="bg-light d-flex flex-column min-height-100" style="min-height: 100vh;">
+
+<div th:replace="~{fragments/header :: navbar}"></div>
+
+<div class="container mt-5 flex-grow-1">
+
+    <h2 class="fw-bold mb-4">Оформлення замовлення</h2>
+
+    <div class="row g-4">
+
+        <!-- ЛІВА ПАНЕЛЬ: СПИСОК ТОВАРІВ (Залишено без змін) -->
+        <div class="col-lg-7">
+
+            <div th:if="${#lists.isEmpty(cartItems)}" class="text-center py-5 bg-white rounded shadow-sm">
+                <h4 class="text-muted">Ваш кошик порожній 😔</h4>
+                <a href="/catalog" class="btn btn-primary mt-3 px-4 rounded-pill">Перейти до покупок</a>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(cartItems)}">
+                <div th:each="item : ${cartItems}" class="card border-0 shadow-sm mb-3 rounded-4 overflow-hidden">
+                    <div class="row g-0 align-items-center p-3">
+
+                        <div class="col-3 col-md-2 text-center">
+                            <img th:src="${item.product.image != null and item.product.image != '' ? item.product.image : 'https://via.placeholder.com/150'}"
+                                 class="img-fluid rounded" alt="Фото" style="max-height: 90px; object-fit: contain;">
+                        </div>
+
+                        <div class="col-9 col-md-4 px-3">
+                            <h6 class="fw-bold mb-1 text-dark" th:text="${item.product.name}">Назва товару</h6>
+                            <p class="text-muted small mb-0 text-truncate" th:text="${item.product.description}">Короткий опис товару...</p>
+                        </div>
+
+                        <div class="col-6 col-md-3 mt-3 mt-md-0 d-flex justify-content-md-center">
+                            <form th:action="@{/cart/update}" method="post" class="m-0 d-flex align-items-center">
+                                <input type="hidden" name="cartItemId" th:value="${item.id}" />
+                                <span class="text-muted small me-2">К-ть:</span>
+                                <input type="number" name="quantity" th:value="${item.quantity}" min="1"
+                                       class="form-control form-control-sm text-center border-secondary-subtle shadow-none"
+                                       style="width: 70px; border-radius: 8px;"
+                                       onchange="this.form.submit()" title="Змінити">
+                            </form>
+                        </div>
+
+                        <div class="col-6 col-md-3 mt-3 mt-md-0 text-end pe-2">
+                            <div class="fs-5 fw-bold text-dark mb-1" th:text="${item.product.price * item.quantity} + ' ₴'">0 ₴</div>
+
+                            <form th:action="@{/cart/remove}" method="post" class="m-0">
+                                <input type="hidden" name="cartItemId" th:value="${item.id}" />
+                                <button type="submit" class="btn btn-link text-danger p-0 text-decoration-none small">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3 me-1" viewBox="0 0 16 16">
+                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .471-.53Zm5.058 0a.5.5 0 0 1 .471.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                    </svg> Видалити
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ПРАВА ПАНЕЛЬ: ОФОРМЛЕННЯ ЗАМОВЛЕННЯ (Оновлено) -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 20px;" th:unless="${#lists.isEmpty(cartItems)}">
+
+                <div class="d-flex justify-content-between align-items-end mb-4">
+                    <span class="fs-5 text-muted">Разом до сплати:</span>
+                    <strong class="fs-3 text-success fw-bold" th:text="${cartTotal} + ' ₴'">0 ₴</strong>
+                </div>
+
+                <hr class="text-secondary-subtle mt-0 mb-4">
+
+                <div sec:authorize="isAnonymous()" class="alert alert-secondary rounded-3 p-3 mb-4 border-0" style="background-color: #f8f9fa; font-size: 0.9rem;">
+                    <strong>Купуєте вперше?</strong> Оформіть замовлення як гість або
+                    <a th:href="@{/login}" class="text-dark fw-bold text-decoration-underline">увійдіть в акаунт</a>, щоб зберегти історію покупок.
+                </div>
+
+                <h5 class="fw-bold mb-3">Контактні дані</h5>
+
+                <form class="needs-validation" method="post" th:action="@{/order/submit}">
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-sm-6">
+                            <label for="firstName" class="form-label small text-muted mb-1">Ім'я</label>
+                            <input type="text" class="form-control form-control-lg border-secondary-subtle" id="firstName" name="firstName"
+                                   th:value="${user != null ? user.firstName : ''}" required>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="lastName" class="form-label small text-muted mb-1">Прізвище</label>
+                            <input type="text" class="form-control form-control-lg border-secondary-subtle" id="lastName" name="lastName"
+                                   th:value="${user != null ? user.lastName : ''}" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phone" class="form-label small text-muted mb-1">Номер телефону</label>
+                        <input type="tel" class="form-control form-control-lg border-secondary-subtle" id="phone" name="phone"
+                               th:value="${user != null ? user.phone : ''}" placeholder="+380..." required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label small text-muted mb-1">Електронна пошта</label>
+                        <input type="email" class="form-control form-control-lg border-secondary-subtle" id="email" name="email"
+                               th:value="${user != null ? user.email : ''}" placeholder="email@example.com">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="np-search" class="form-label small text-muted mb-1">Місто та відділення Нової Пошти</label>
+                        <input class="form-control form-control-lg border-secondary-subtle" list="np-list" id="np-search" name="address"
+                               th:value="${user != null ? user.address : ''}" placeholder="Почніть вводити назву..." required>
+                        <datalist id="np-list">
+                            <option value="Київ, Відділення №1 (вул. Пирогівський шлях, 135)"></option>
+                            <option value="Київ, Відділення №2 (вул. Богатирська, 11)"></option>
+                            <option value="Львів, Відділення №3 (вул. Угорська, 22)"></option>
+                            <option value="Дніпро, Відділення №1 (вул. Маршала Малиновського, 114)"></option>
+                            <option value="Одеса, Відділення №4 (вул. Академіка Вільямса, 86)"></option>
+                            <option value="Харків, Відділення №6 (вул. Академіка Павлова, 120)"></option>
+                            <option value="Суми, Відділення №2 (вул. Лінійна, 15)"></option>
+                            <option value="Охтирка, Відділення №1 (вул. Київська, 11)"></option>
+                        </datalist>
+                        <div class="form-text">Оберіть відділення зі списку або введіть власне.</div>
+                    </div>
+
+                    <button class="w-100 btn btn-success btn-lg fw-bold text-uppercase rounded-pill shadow-sm" type="submit" style="letter-spacing: 1px;">
+                        Замовлення підтверджую
+                    </button>
+
+                    <p class="text-center text-muted small mt-3 mb-0">
+                        Отримуючи замовлення, ви погоджуєтесь з умовами угоди користувача.
+                    </p>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}" class="mt-auto pt-5"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>

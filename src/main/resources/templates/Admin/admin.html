@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: layout(${title}, ~{::main})}">
+<body>
+
+<main class="container-xxl my-5 px-xl-5">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-3">
+        <div>
+            <h1 class="fw-bolder text-dark mb-1">Панель адміністратора</h1>
+            <p class="text-muted mb-0">Керування категоріями та товарами вашого магазину в одному місці</p>
+        </div>
+        <div class="row d-flex gap-2 flex-wrap">
+
+            <a class="row ml-2 btn btn-dark rounded-pill px-4 fw-bold text-uppercase" style="letter-spacing: 0.5px;" th:href="@{/addproduct}">
+                + Додати новий товар
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4 align-items-start">
+
+        <div class="col-12 col-lg-5 col-xl-4">
+            <div class="bg-white p-4 rounded-4 shadow-sm border">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold text-dark mb-0">Категорії</h4>
+                    <a class="btn btn-sm btn-dark rounded-pill px-3 fw-bold" th:href="@{/admin/categories/add}">
+                        + Створити
+                    </a>
+                </div>
+
+                <div th:each="category : ${categories}"
+                     class="d-flex justify-content-between align-items-center gap-3 p-3 bg-light rounded-3 border-0">
+                    <div class="overflow-hidden" style="min-width: 0;">
+                        <span class="fw-bold text-dark fs-5 text-truncate d-block" th:text="${category.name}">Назва</span>
+                    </div>
+
+                    <div class="d-flex gap-2 flex-shrink-0">
+                        <a class="btn btn-icon btn-sm btn-warning d-flex align-items-center justify-content-center p-0 shadow-sm"
+                           style="width: 32px; height: 32px;"
+                           th:href="@{/admin/categories/edit/{id}(id=${category.id})}"
+                           title="Редагувати категорію">
+                            ✏️
+                        </a>
+                        <a sec:authorize="hasRole('ADMIN')"
+                           class="btn btn-icon btn-sm btn-outline-danger bg-white d-flex align-items-center justify-content-center p-0 shadow-sm"
+                           style="width: 32px; height: 32px;"
+                           th:href="@{/admin/categories/delete/{id}(id=${category.id})}"
+                           onclick="return confirm('Ти дійсно хочеш видалити цю категорію? Усі товари в ній можуть залишитися без категорії!');"
+                           title="Видалити категорію">
+                            🗑️
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-7 col-xl-8">
+            <div class="bg-white p-4 rounded-4 shadow-sm border">
+
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <h4 class="fw-bold text-dark mb-0">Наші товари</h4>
+
+                    <div class="dropdown">
+                        <button class="btn btn-outline-dark dropdown-toggle rounded-pill px-4" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span th:text="${selectedCategoryId == null ? 'Всі категорії' : 'Категорія обрана'}">Фільтр</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="categoryDropdown">
+                            <li>
+                                <a class="dropdown-item" th:href="@{/admin}"
+                                   th:classappend="${selectedCategoryId == null} ? 'active bg-dark text-white' : ''">
+                                    Всі товари
+                                </a>
+                            </li>
+                            <li th:each="category : ${categories}">
+                                <a class="dropdown-item"
+                                   th:href="@{/admin(categoryId=${category.id})}"
+                                   th:classappend="${selectedCategoryId == category.id} ? 'active bg-dark text-white' : ''"
+                                   th:text="${category.name}">
+                                    Назва
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="row row-cols-1 row-cols-md-2 g-3">
+                    <div class="col mt-2" th:each="product : ${products}">
+                        <div class="card h-100 border rounded-4 p-4 d-flex flex-column justify-content-between bg-light">
+
+                            <div class="mb-3">
+                                <h5 class="fw-bold text-dark mb-1" th:text="${product.name}">Товар</h5>
+                                <p class="fs-4 fw-bold text-dark mb-0" th:text="|${product.price} ₴|">0 ₴</p>
+                            </div>
+
+                            <div class="d-flex gap-2 ">
+                                <a class="btn btn-outline-dark rounded-pill px-3 fw-semibold flex-fill btn-sm"
+                                   th:href="@{/edit(productId=${product.id})}">
+                                    ✏️ Редагувати
+                                </a>
+                                <a class="btn btn-outline-danger rounded-pill pl-3 fw-semibold flex-fill btn-sm"
+                                   th:href="@{/remove(productId=${product.id})}"
+                                   onclick="return confirm('Ти дійсно хочеш видалити цей товар?');">
+                                    🗑️ Видалити
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</main>
+
+</body>
+</html>

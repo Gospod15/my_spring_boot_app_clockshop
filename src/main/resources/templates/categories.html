@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout(${title}, ~{::main})}">
+<body>
+
+<main>
+    <div class="container my-5">
+        <h2 class="mb-5 fw-bold text-left">Категорії</h2>
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-xl-10">
+
+                <div th:each="category : ${categories}" class="card shadow-sm mb-4 border-0 bg-white" style="max-width: 1000px; margin: 0 auto;">
+                    <div class="row g-0 align-items-center">
+
+                        <div class="col-12 col-md-4 col-lg-3">
+                            <img th:src="${#strings.isEmpty(category.image) ? 'https://i.pinimg.com/736x/55/9c/60/559c60b26501bb4270a62545e56938c8.jpg' : category.image}"
+                                 class="ml-4 img-fluid rounded w-100"
+                                 style="aspect-ratio: 1 / 1; object-fit: cover;"
+                                 alt="Фото категорії">
+                        </div>
+
+                        <div class="col-12 col-md-8 col-lg-9">
+                            <div class="card-body p-4 p-lg-5">
+                                <h4 class="card-title fw-bold mb-3" th:text="${category.name}">Назва категорії</h4>
+
+                                <p class="card-text text-muted mb-4"
+                                   th:text="${#strings.isEmpty(category.description)} ? 'Опис відсутній' : ${category.description}">
+                                    Опис категорії...
+                                </p>
+
+                                <div>
+                                    <a class="btn btn-outline-dark rounded-pill px-4" th:href="@{/catalog(categoryId=${category.id})}">
+                                        Переглянути товари
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

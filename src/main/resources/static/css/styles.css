@@ -1,0 +1,183 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Montserrat', 'Arial', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-link-custom {
+    color: #1a1a1a;
+    transition: color 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.nav-link-custom:hover {
+    color: #000000 !important;
+}
+
+.logo-text {
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 2px;
+}
+
+.btn {
+    padding: 0.75rem 2rem !important;
+    border-radius: 4px !important;
+    text-transform: uppercase !important;
+    font-weight: 600 !important;
+    letter-spacing: 1px;
+    box-shadow: none !important;
+    transition: all 0.3s ease !important;
+}
+
+.card .btn, .product-card .btn {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.85rem !important;
+    text-transform: none !important;
+    letter-spacing: normal;
+    white-space: nowrap;
+}
+
+.form-control, .input-group-text {
+    border-radius: 4px !important;
+    box-shadow: none !important;
+}
+
+html[data-theme="dark"] body {
+    background-color: #121212 !important;
+    color: #e0e0e0 !important;
+}
+
+html[data-theme="dark"] .bg-light,
+html[data-theme="dark"] .bg-white,
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .navbar,
+html[data-theme="dark"] .modal-content,
+html[data-theme="dark"] .dropdown-menu {
+    background-color: #1e1e1e !important;
+    border-color: #333333 !important;
+}
+
+html[data-theme="dark"] .text-dark,
+html[data-theme="dark"] .nav-link-custom,
+html[data-theme="dark"] .modal-title {
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .text-muted {
+    color: #888888 !important;
+}
+
+html[data-theme="dark"] .btn-dark {
+    background-color: #191919 !important;
+    color: #cccccc !important;
+    border: 1px solid #cdcdcd !important;
+}
+
+html[data-theme="dark"] .btn-dark:hover {
+    background-color: #f3f3f3 !important;
+    color: #171717 !important;
+    border-color: #121212 !important;
+}
+
+html[data-theme="dark"] .btn-outline-dark {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    border: 1px solid #555555 !important;
+}
+
+html[data-theme="dark"] .btn-outline-dark:hover {
+    border-color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+html[data-theme="dark"] .form-control {
+    background-color: #121212 !important;
+    color: #ffffff !important;
+    border: 1px solid #444444 !important;
+}
+
+html[data-theme="dark"] .input-group-text {
+    background-color: #121212 !important;
+    color: #888888 !important;
+    border: 1px solid #444444 !important;
+    border-right: none !important;
+}
+
+html[data-theme="dark"] .border,
+html[data-theme="dark"] .border-bottom,
+html[data-theme="dark"] .modal-header,
+html[data-theme="dark"] .modal-footer,
+html[data-theme="dark"] hr,
+html[data-theme="dark"] .table td,
+html[data-theme="dark"] .table th {
+    border-color: #333333 !important;
+}
+
+html[data-theme="dark"] .table {
+    color: #e0e0e0 !important;
+}
+
+.dropdown-menu {
+    border-radius: 4px !important;
+    padding: 0.5rem !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid #e0e0e0 !important;
+}
+
+.dropdown-item {
+    border-radius: 4px !important;
+    padding: 0.6rem 1rem !important;
+    font-weight: 500;
+    color: #1a1a1a !important;
+    transition: all 0.2s ease !important;
+    margin-bottom: 2px;
+}
+
+.dropdown-item:last-child {
+    margin-bottom: 0;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0 !important;
+    color: #1a1a1a !important;
+}
+
+.dropdown-item.active {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+
+html[data-theme="dark"] .dropdown-menu {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid #333333 !important;
+}
+
+html[data-theme="dark"] .dropdown-item {
+    color: #e0e0e0 !important;
+}
+
+html[data-theme="dark"] .dropdown-item:hover {
+    background-color: #2a2a2a !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .dropdown-item.active {
+    background-color: #f3f3f3 !important;
+    color: #171717 !important;
+}
+
+.card .btn, .product-card .btn {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.85rem !important;
+    text-transform: none !important;
+    letter-spacing: normal;
+    white-space: nowrap;
+}
+
+.btn.btn-icon {
+    padding: 0 !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+}

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <title th:text="${title}">Сторінка</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('shopTheme') || 'light');
+    </script>
+</head>
+
+<body>
+
+<nav th:fragment="navbar" class="p-3 bg-white navbar-light shadow-sm sticky-top border-bottom">
+    <div class="container-fluid px-lg-5">
+        <div class="row align-items-center w-100 m-0">
+            <div class="col-12 col-lg-3 d-flex justify-content-center justify-content-lg-start mb-3 mb-lg-0 p-0">
+                <a th:href="@{/}" class="text-decoration-none">
+                    <span class="fs-4 fw-bold text-dark text-uppercase logo-text">Clock<span style="color: #a88151;">Shop</span></span>
+                </a>
+            </div>
+            <div class="col-12 col-lg-4 d-flex justify-content-center mb-3 mb-lg-0 p-0">
+                <form role="search" class="w-100 px-lg-3" style="max-width: 450px;">
+                    <div class="input-group shadow-sm rounded-pill">
+                        <span class="input-group-text bg-light border-0 rounded-start-pill text-muted ps-4"><i class="bi bi-search"></i></span>
+                        <input type="search" class="form-control bg-light border-0 rounded-end-pill px-3 py-2" th:placeholder="#{search.text}" style="font-size: 0.9rem;">
+                    </div>
+                </form>
+            </div>
+            <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center justify-content-lg-end gap-3 p-0">
+                <ul class="nav mb-0 align-items-center">
+                    <li><a th:href="@{/}" class="nav-link px-2 nav-link-custom text-uppercase fw-semibold" style="font-size: 0.8rem;" th:text="#{main.text}"></a></li>
+                    <li><a th:href="@{/catalog}" class="nav-link px-2 nav-link-custom text-uppercase fw-semibold" style="font-size: 0.8rem;" th:text="#{catalog.text}"></a></li>
+                    <li><a th:href="@{/categories}" class="nav-link px-2 nav-link-custom text-uppercase fw-semibold" style="font-size: 0.8rem;" th:text="#{categories.text}"></a></li>
+                    <li><a th:href="@{/about}" class="nav-link px-2 nav-link-custom text-uppercase fw-semibold" style="font-size: 0.8rem;" th:text="#{about.text}"></a></li>
+
+                    <li sec:authorize="isAuthenticated()">
+                        <a th:href="@{/profile}" class="nav-link px-2 nav-link-custom text-uppercase fw-semibold" style="font-size: 0.8rem; letter-spacing: 1px;" th:text="#{profile.text}">Кабінет</a>
+                    </li>
+
+                    <li sec:authorize="isAnonymous()">
+                        <a th:href="@{/login}" class="nav-link px-2 nav-link-custom text-uppercase fw-semibold" style="font-size: 0.8rem; letter-spacing: 1px;" th:text="#{login.text}">Увійти</a>
+                    </li>
+
+                    <li class="nav-item dropdown ms-3">
+                        <a class="nav-link text-dark p-2" href="#" data-bs-toggle="dropdown"><i class="bi bi-gear-fill fs-5"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                            <li><h6 class="dropdown-header">Тема</h6></li>
+                            <li><button class="dropdown-item" onclick="setTheme('light')"><i class="bi bi-sun"></i> Світла</button></li>
+                            <li><button class="dropdown-item" onclick="setTheme('dark')"><i class="bi bi-moon-stars"></i> Темна</button></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Мова</h6></li>
+                            <li><button class="dropdown-item" onclick="setLanguage('uk')">🇺🇦 Українська</button></li>
+                            <li><button class="dropdown-item" onclick="setLanguage('en')">🇬🇧 English</button></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+</body>
+</html>

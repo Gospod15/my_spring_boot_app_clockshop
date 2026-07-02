@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout(${title}, ~{::main})}">
+
+<body>
+<main class="container-fluid bg-light p-5">
+
+    <div class="container">
+        <div class="mt-4 ml-4">
+            <h1 th:text="#{welcome.text}"></h1>
+            <p class="text-start" th:text="#{under_welcome.text}"></p>
+
+            <div class="row align-items-center mt-5 gy-5">
+                <div class="col-12 col-lg-6 text-center">
+                    <div class="position-relative d-inline-block">
+                        <img src="https://media.istockphoto.com/id/628540774/photo/luxury-watches.jpg?s=612x612&w=0&k=20&c=lUY9ajPS1J1_h-ta-6n2VUIUSWUKVeJeWx_eDVjOc1c="
+                             class="img-fluid rounded shadow-lg"
+                             style="max-width: 100%; object-fit: cover;"
+                             alt="Елітні годинники">
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6 text-lg-start px-lg-5">
+                    <h2 class="display-5 fw-bold mb-3" th:text="#{mainh2.text}"></h2>
+                    <p class="lead text-muted mb-4" th:utext="#{mainp.text}"></p>
+                    <a class="btn btn-dark btn-lg rounded-pill px-5 py-3 shadow-sm text-uppercase fw-semibold" th:href="@{/catalog}" th:text="#{tocatalog.text}"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+
+            <div class="col-12 col-md-10 px-4 px-lg-5 py-4 shadow-lg rounded-4 bg-white">
+
+                <h3 class="fw-bold text-dark mb-4 text-center" th:text="#{mainh3.text}"></h3>
+
+                <div class="d-flex justify-content-between gap-2">
+                    <img src="https://i.pinimg.com/736x/66/3c/4f/663c4f46cdc398f442b31f37d8dffe2e.jpg"
+                         class="rounded shadow-sm"
+                         style="width: 33%; aspect-ratio: 1 / 1; object-fit: cover;"
+                         alt="фото 1">
+
+                    <img src="https://i.pinimg.com/1200x/80/dd/6b/80dd6bc9c08c59560f72165290631f51.jpg"
+                         class="rounded shadow-sm"
+                         style="width: 33%; aspect-ratio: 1 / 1; object-fit: cover;"
+                         alt="фото 2">
+
+                    <img src="https://i.pinimg.com/1200x/1a/2c/19/1a2c1926a3cd0f70f2515f287ccdd932.jpg"
+                         class="rounded shadow-sm"
+                         style="width: 33%; aspect-ratio: 1 / 1; object-fit: cover;"
+                         alt="фото 3">
+                </div>
+
+                <p class="text-muted text-left" th:text="#{mainp1.text}"></p>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

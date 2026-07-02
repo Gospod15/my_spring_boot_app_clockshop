@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout('Каталог', ~{::main})}">
+<body>
+<main class="container my-4 flex-grow-1">
+
+    <!-- Стилі для сердечка -->
+    <style>
+        .favorite-btn-overlay {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 10;
+            background: transparent !important;
+            border: none !important;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            padding: 0;
+            line-height: 1;
+        }
+        .favorite-btn-overlay:hover {
+            transform: scale(1.2);
+        }
+    </style>
+
+    <!-- Шапка: Заголовок та Фільтри -->
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <h2 class="fw-bold text-dark mb-0" th:text="#{catalog.text}">Каталог товарів</h2>
+
+        <div class="d-flex align-items-center gap-2">
+            <!-- Кнопка "Обрані" (загальна) -->
+            <a th:if="${principal != null}"
+               th:href="${showFavorites} ? @{/catalog} : @{/catalog(showFavorites=true)}"
+               class="btn d-flex align-items-center justify-content-center"
+               style="width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem;"
+               th:title="${showFavorites} ? 'Показати всі товари' : 'Показати обрані'">
+                <span th:text="${showFavorites} ? '🤍' : '🖤'"></span>
+            </a>
+
+            <!-- Дропдаун категорій -->
+            <div class="dropdown">
+                <button class="btn btn-outline-dark dropdown-toggle px-4" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="height: 40px;">
+                    <span th:text="${selectedCategoryId == null ? 'Всі категорії' : 'Фільтр'}">Всі категорії</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="categoryDropdown">
+                    <li>
+                        <a class="dropdown-item" th:href="@{/catalog}"
+                           th:classappend="${selectedCategoryId == null} ? 'active fw-bold' : ''">Всі товари</a>
+                    </li>
+                    <li th:each="category : ${categories}">
+                        <a class="dropdown-item"
+                           th:href="@{/catalog(categoryId=${category.id})}"
+                           th:classappend="${selectedCategoryId == category.id} ? 'active fw-bold' : ''"
+                           th:text="${category.name}">Назва</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Сітка товарів -->
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-4 mb-4" th:each="product : ${products}">
+            <div class="card h-100 shadow-sm border-0 product-card bg-white">
+
+                <!-- Контейнер картинки -->
+                <!-- p-3 робить відступ, щоб годинник не прилипав до країв -->
+                <div class="position-relative p-3" style="height: 250px;">
+
+                    <div th:if="${principal != null}">
+                        <button type="submit"
+                                th:form="${favoriteProductIds != null and favoriteProductIds.contains(product.id)} ? 'removeForm' + ${product.id} : 'addForm' + ${product.id}"
+                                class="favorite-btn-overlay">
+                            <span th:text="${favoriteProductIds != null and favoriteProductIds.contains(product.id)} ? '🤍' : '🖤'"></span>
+                        </button>
+                    </div>
+
+                    <img th:src="${product?.image} ?: '/images/placeholder.png'"
+                         class="w-100 h-100"
+                         style="object-fit: contain; object-position: center;"
+                         alt="Товар">
+                </div>
+
+                <!-- ФОРМИ ДЛЯ ОБРАНОГО (Приховані, щоб не ламати верстку) -->
+                <div th:if="${principal != null}">
+                    <form th:id="'removeForm' + ${product.id}" th:action="@{/favorites/remove}" method="post" class="d-none">
+                        <input type="hidden" name="productId" th:value="${product.id}" />
+                    </form>
+                    <form th:id="'addForm' + ${product.id}" th:action="@{/favorites/add}" method="post" class="d-none">
+                        <input type="hidden" name="productId" th:value="${product.id}" />
+                    </form>
+                </div>
+
+                <!-- Тіло картки -->
+                <div class="card-body d-flex flex-column p-4">
+                    <div class="mb-3">
+                        <h5 class="card-title fw-bold mb-2" th:text="${product?.name}">Назва товару</h5>
+                        <p class="card-text text-dark fs-5 fw-semibold mb-0" th:text="${product?.price} + ' грн'">0 грн</p>
+                    </div>
+
+                    <!-- Кнопки дій -->
+                    <div class="mt-auto button-group d-flex gap-2">
+                        <a th:href="@{/product(productId=${product?.id})}"
+                           class="btn btn-outline-dark flex-fill text-center py-2 px-1" style="font-size: 0.9rem;">
+                            Детальніше
+                        </a>
+
+                        <form th:action="@{/cart/add}" method="post" class="d-flex gap-2 m-0 flex-fill add-to-cart-form">
+                            <input type="hidden" name="productId" th:value="${product.id}" />
+
+                            <input type="number" name="quantity" value="1" min="1"
+                                   class="form-control text-center border"
+                                   style="width: 50px; font-size: 0.9rem;" title="Кількість"/>
+
+                            <button type="submit" class="btn btn-dark flex-fill py-2 px-1" style="font-size: 0.9rem;">
+                                В кошик
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Заглушка, якщо товарів немає -->
+    <div th:if="${#lists.isEmpty(products)}" class="text-center py-5">
+        <i class="bi bi-box-seam text-muted" style="font-size: 3.5rem;"></i>
+
+        <h4 class="mt-3 text-muted" th:text="${showFavorites} ? 'У вас ще немає обраних товарів' : 'У цій категорії поки немає товарів'">
+            У цій категорії поки немає товарів
+        </h4>
+
+        <div class="d-flex justify-content-center gap-2 mt-4">
+            <a th:if="${principal != null and !showFavorites}"
+               th:href="@{/catalog(showFavorites=true)}"
+               class="btn btn-outline-dark">
+                Переглянути обрані
+            </a>
+
+            <a th:if="${showFavorites or selectedCategoryId != null}"
+               th:href="@{/catalog}"
+               class="btn btn-dark">
+                Повернутися до всіх товарів
+            </a>
+        </div>
+    </div>
+
+</main>
+</body>
+</html>

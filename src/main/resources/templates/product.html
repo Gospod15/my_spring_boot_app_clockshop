@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout(${title}, ~{::main})}">
+<body>
+
+<main class="container-xxl my-5 px-xl-5">
+
+    <div class="mb-4">
+        <a th:href="@{/catalog}" class="text-decoration-none text-muted fw-semibold" style="font-size: 1.1rem; transition: 0.3s;">
+            <span class="fs-4 align-middle me-2"></span>Назад до каталогу
+        </a>
+    </div>
+
+    <div th:if="${product != null}">
+
+        <div class="bg-white rounded shadow-lg border-0 p-4 p-lg-5">
+            <div class="row g-5 align-items-center">
+
+                <div class="col-12 col-lg-6">
+                    <div class="rounded overflow-hidden shadow-sm bg-transparent" style="background-color: #fcfcfc; width: 100%; aspect-ratio: 1 / 1;">
+                        <img th:src="${product?.image} ?: '/images/placeholder.png'"
+                             class="w-100 h-100 rounded img-fluid"
+                             style="object-fit: cover;"
+                             alt="Зображення товару">
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6 d-flex flex-column justify-content-center">
+
+                    <div class="d-flex align-items-center mb-3 flex-wrap gap-3">
+                        <span class="d-inline-flex text-success px-2 py-2s"></span> В наявності
+                        <div class="ml-5 text-warning fs-5">
+                            ★★★★★ <span class="text-muted text-decoration-underline ms-1 fs-6">(N відгуків)</span>
+                        </div>
+                    </div>
+
+                    <h1 class="fw-bolder mb-3 display-5 text-dark" th:text="${product?.name}">Назва товару</h1>
+
+                    <div class="mb-4 d-flex align-items-baseline">
+                        <span class="display-4 fw-bolder text-dark" th:text="${product?.price}">0</span>
+                        <span class="display-4 fw-bold text-muted ms-2">₴</span>
+                    </div>
+
+                    <div class="mb-4">
+                        <p class="text-secondary lh-lg mb-0" style="white-space: pre-line; font-size: 1.05rem;"
+                           th:text="${product?.description != null && !product.description.isEmpty()} ? ${product.description} : 'Опис для цього товару відсутній.'">
+                            Детальний опис...
+                        </p>
+                    </div>
+
+                    <div class="row g-3 mt-auto">
+                        <form th:action="@{/cart/add}" method="post" class="d-flex gap-2 m-0 flex-fill">
+                            <input type="hidden" name="productId" th:value="${product.id}" />
+
+                            <button type="submit" class="btn btn-dark btn-lg w-100 py-3 fw-bold rounded-pill text-uppercase shadow-sm" style="font-size: 0.9rem;">
+                                В кошик
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-5" style="border-top: 2px solid #dee2e6; opacity: 0.7;">
+
+        <div class="row g-4 mb-5">
+
+            <div class="col-12 col-lg-7">
+                <div class="bg-white p-4 p-lg-5 rounded shadow-lg border-0 h-100">
+                    <h4 class="fw-bold text-dark mb-4 text-uppercase" style="font-size: 1.1rem; letter-spacing: 1px;">Технічні характеристики</h4>
+
+                    <ul class="list-unstyled mb-0 text-muted" style="font-size: 1.1rem;">
+                        <li class="d-flex justify-content-between border-bottom pb-3 mb-3">
+                            <span>Бренд</span>
+                            <span class="fw-bold text-dark">Оригінал</span>
+                        </li>
+                        <li class="d-flex justify-content-between border-bottom pb-3 mb-3">
+                            <span>Стать</span>
+                            <span class="fw-bold text-dark">Унісекс</span>
+                        </li>
+                        <li class="d-flex justify-content-between border-bottom pb-3 mb-3">
+                            <span>Матеріал корпусу</span>
+                            <span class="fw-bold text-dark">Нержавіюча сталь</span>
+                        </li>
+                        <li class="d-flex justify-content-between pb-2">
+                            <span>Гарантія</span>
+                            <span class="fw-bold text-dark">12 місяців від виробника</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-5">
+                <div class="bg-white p-4 p-lg-5 rounded shadow-lg border-0 h-100 d-flex flex-column justify-content-center gap-4">
+
+                    <div class="d-flex align-items-start">
+                        <span class="fs-2 me-3">🚚</span>
+                        <div>
+                            <h5 class="fw-bold mb-1 text-dark">Доставка</h5>
+                            <p class="text-muted mb-0">Нова Пошта, Укрпошта. Відправка сьогодні.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start">
+                        <span class="fs-2 me-3">💳</span>
+                        <div>
+                            <h5 class="fw-bold mb-1 text-dark">Оплата</h5>
+                            <p class="text-muted mb-0">При отриманні замовлення або карткою онлайн.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start">
+                        <span class="fs-2 me-3">🛡️</span>
+                        <div>
+                            <h5 class="fw-bold mb-1 text-dark">Гарантія</h5>
+                            <p class="text-muted mb-0">14 днів на легке повернення чи обмін.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div th:unless="${product != null}" class="alert alert-danger text-center my-5 rounded shadow-sm p-5 border-0">
+        <h3 class="fw-bold mb-3">Упс! Не вдалося завантажити дані про товар.</h3>
+        <p class="text-muted mb-4">Можливо, товар було видалено або посилання недійсне.</p>
+        <a th:href="@{/catalog}" class="btn btn-dark btn-lg rounded-pill px-5">Повернутися в каталог</a>
+    </div>
+
+</main>
+
+</body>
+</html>
